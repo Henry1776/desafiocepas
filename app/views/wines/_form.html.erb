@@ -1,22 +1,29 @@
 <%= form_with(model: wine) do |form| %>
-  <% if wine.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(wine.errors.count, "error") %> prohibited this wine from being saved:</h2>
+<% if wine.errors.any? %>
+<div id="error_explanation">
+<h2><%= pluralize(wine.errors.count, "error") %> prohibited this wine from being saved:</h2>
 
-      <ul>
-        <% wine.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+<ul>
+<% wine.errors.each do |error| %>
+<li><%= error.full_message %></li>
 <% end %>
+</ul>
+</div>
+<% end %>
+
+<div class="field">
+<%= form.label :name %>
+<%= form.text_field :name %>
+</div>
+
+<%= form.fields_for :wine_strains do |strain| %>
+<div class="field">
+<%= strain.select :strain_id, @strains, prompt: 'Select a strain' %>
+<%= strain.text_field :percentage, placeholder: 'add a percentage' %> 
+</div>
+<% end %> 
+
+<div class="actions">
+<%= form.submit %>
+</div>
+<% end %> 

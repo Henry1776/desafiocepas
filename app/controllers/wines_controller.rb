@@ -1,5 +1,8 @@
 class WinesController < ApplicationController
   before_action :set_wine, only: %i[ show edit update destroy ]
+  before_action :set_strains, only: %i[ new edit create ]
+  before_action :set_wine_strains, only: %i[ new edit create ]
+  before_action :set_wine_strains_instances, only: %i[ new edit ] 
 
   # GET /wines or /wines.json
   def index
@@ -13,10 +16,17 @@ class WinesController < ApplicationController
   # GET /wines/new
   def new
     @wine = Wine.new
+    @strains = Strain.pluck(:name, :id) 
+    @wine.wine_strains.build
+    @wine.wine_strains.build
+    @wine.wine_strains.build
+    @wine.wine_strains.build
   end
 
   # GET /wines/1/edit
   def edit
+    @strains = Strain.pluck(:name, :id) 
+    @wine.wine_strains.build
   end
 
   # POST /wines or /wines.json
@@ -25,14 +35,15 @@ class WinesController < ApplicationController
 
     respond_to do |format|
       if @wine.save
-        format.html { redirect_to @wine, notice: "Wine was successfully created." }
+        format.html { redirect_to @wine, notice: 'Wine was successfully created.' }
         format.json { render :show, status: :created, location: @wine }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new }
         format.json { render json: @wine.errors, status: :unprocessable_entity }
       end
     end
   end
+
 
   # PATCH/PUT /wines/1 or /wines/1.json
   def update
@@ -62,8 +73,19 @@ class WinesController < ApplicationController
       @wine = Wine.find(params[:id])
     end
 
+    def set_strains
+      @strains = Strain.all
+    end
+
+    def set_wine_strains
+      @wine_strains = WineStrain.all
+    end
+
+    def set_wine_strains_instances
+    end
+
     # Only allow a list of trusted parameters through.
     def wine_params
-      params.require(:wine).permit(:name)
+      params.require(:wine).permit(:name, wine_strains_attributes: [:id, :percentage, :wine_id, :strain_id]) 
     end
 end
